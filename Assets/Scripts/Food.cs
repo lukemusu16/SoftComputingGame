@@ -7,19 +7,26 @@ public class Food : MonoBehaviour
 
     int points;
 
-    public bool isEaten = false;
+    private bool isEaten = false;
+
+    GameManager gm;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public bool GetIsEaten()
+    {
+        return isEaten;
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -40,6 +47,7 @@ public class Food : MonoBehaviour
             GameData.Score += points;
 
             isEaten = true;
+            gm.checkEaten++;
         }
 
         print(GameData.Score);

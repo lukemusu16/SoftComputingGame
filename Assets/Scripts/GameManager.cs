@@ -27,11 +27,8 @@ public class GameManager : MonoBehaviour
 
 	List<GameObject> foods = new List<GameObject>();
 
-	int checkEaten = 0;
+	public int checkEaten = 0;
 
-
-
-	int width, height;
 
 
 	public void Start()
@@ -73,9 +70,9 @@ public class GameManager : MonoBehaviour
 
 		foreach (GameObject food in foods)
 		{
-			if (food.GetComponent<Food>().isEaten)
+			if (food.GetComponentInChildren<Food>().GetIsEaten())
 			{
-				checkEaten++;
+				food.GetComponentInChildren<Food>().enabled = false;
 			}
 
 			if (checkEaten == foods.Count)
@@ -83,6 +80,8 @@ public class GameManager : MonoBehaviour
 				SceneManager.LoadScene("Main");
 			}
 		}
+
+		print(checkEaten + "/" + foods.Count);
 	}
 
 	public void CreateMaze()
@@ -107,7 +106,6 @@ public class GameManager : MonoBehaviour
 				if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
 				{
 					delSquare.GetComponent<Tile>().setObstacle(true);
-					print(delSquare);
 				}
 			}
 		}
@@ -124,7 +122,6 @@ public class GameManager : MonoBehaviour
 					if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
 					{
 						delSquare.GetComponent<Tile>().isVisited = true;
-						//print(delSquare);
 					}
 				}
 			}
@@ -163,8 +160,6 @@ public class GameManager : MonoBehaviour
 				  tiles[2].GetComponent<Tile>().isVisited == false ||
 				  tiles[3].GetComponent<Tile>().isVisited == false)
 			{
-
-				print(tiles[ranNum].transform.position + " " + points);
 
 				if (tiles[ranNum].GetComponent<Tile>().isVisited == false)
 				{

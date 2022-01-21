@@ -10,11 +10,11 @@ public class GameData : MonoBehaviour
     private static float _offset = 15f;
     private static int _health = 100;
 
-    private static int _hs1 = 0;
-    private static int _hs2 = 0;
-    private static int _hs3 = 0;
-    private static int _hs4 = 0;
-    private static int _hs5 = 0;
+    private static int _hs1;
+    private static int _hs2;
+    private static int _hs3;
+    private static int _hs4;
+    private static int _hs5;
 
     public static int Score
     {
