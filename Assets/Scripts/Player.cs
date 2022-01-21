@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -43,6 +44,25 @@ public class Player : MonoBehaviour
         else if (movement.y == 0)
         {
             isLockHorizontal = false;
+        }
+    }
+
+    private void ReduceHealth(int value)
+    {
+        GameData.Health -= value;
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Enemy"))
+        {
+            ReduceHealth(25);
+
+            if (GameData.Health <= 0)
+            {
+                GameData.Score = 0;
+                SceneManager.LoadScene("Highscores");
+            }
         }
     }
 }

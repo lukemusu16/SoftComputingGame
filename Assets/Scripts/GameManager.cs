@@ -4,6 +4,7 @@ using UnityEngine;
 using Pathfinding;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,7 +25,9 @@ public class GameManager : MonoBehaviour
 
 	List<GameObject> obst = new List<GameObject>();
 
-	List<GameObject> food = new List<GameObject>();
+	List<GameObject> foods = new List<GameObject>();
+
+	int checkEaten = 0;
 
 
 
@@ -33,6 +36,9 @@ public class GameManager : MonoBehaviour
 
 	public void Start()
 	{
+
+		GameData.Health = 100;
+
 		//Setting the _cam to main camera
 		_cam = Camera.main;
 		//Loading the path finding
@@ -48,7 +54,7 @@ public class GameManager : MonoBehaviour
 			addSeeker();
 		}
 
-		for (int i = 0; i < Random.Range(0, 10); i++)
+		for (int i = 0; i < Random.Range(10, 20); i++)
 		{
 			addFood();
 		}
@@ -64,6 +70,19 @@ public class GameManager : MonoBehaviour
 	private void Update()
 	{
 		AstarPath.active.Scan();
+
+		foreach (GameObject food in foods)
+		{
+			if (food.GetComponent<Food>().isEaten)
+			{
+				checkEaten++;
+			}
+
+			if (checkEaten == foods.Count)
+			{
+				SceneManager.LoadScene("Main");
+			}
+		}
 	}
 
 	public void CreateMaze()
@@ -108,18 +127,6 @@ public class GameManager : MonoBehaviour
 						//print(delSquare);
 					}
 				}
-				else if (y == 1 || y == GameData.Height - 2)
-				{
-					GameObject delSquare;
-
-					if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
-					{
-						delSquare.GetComponent<Tile>().isVisited = true;
-						delSquare.GetComponent<Tile>().setObstacle(false);
-						print(delSquare.transform.position + " " + x + " " + y);
-					}
-				}
-
 			}
 		}
 
@@ -231,8 +238,15 @@ public class GameManager : MonoBehaviour
 
 	private void addPlayer()
 	{
+		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 		Vector3 spawnLoc = _gm.getSpawnLocation();
-		GameObject seek = Instantiate(_playerPrefab, spawnLoc, Quaternion.identity);
+		
+
+		if (Vector3.Distance(spawnLoc, enemies[0].transform.position) > 10 ||
+			Vector3.Distance(spawnLoc, enemies[1].transform.position) > 10)
+		{
+			GameObject seek = Instantiate(_playerPrefab, spawnLoc, Quaternion.identity);
+		}
 	}
 
 	public void addObstacle(Vector2 spawnLoc)
@@ -241,11 +255,7 @@ public class GameManager : MonoBehaviour
 
         GameObject bl = Instantiate(tile, spawnLoc, Quaternion.identity);
 
-		print("gay");
-
         bl.GetComponent<Tile>().setObstacle(true);
-
-		print("ass");
 
 		obst.Add(bl);
 
@@ -266,7 +276,7 @@ public class GameManager : MonoBehaviour
 
 			bl.GetComponentInChildren<Food>().enabled = true;
 
-			food.Add(bl);
+			foods.Add(bl);
 
 
 		}

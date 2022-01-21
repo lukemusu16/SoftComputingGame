@@ -8,6 +8,13 @@ public class GameData : MonoBehaviour
     private static int _height = 30;
     private static int _width = 30;
     private static float _offset = 15f;
+    private static int _health = 100;
+
+    private static int _hs1 = 0;
+    private static int _hs2 = 0;
+    private static int _hs3 = 0;
+    private static int _hs4 = 0;
+    private static int _hs5 = 0;
 
     public static int Score
     {
@@ -29,4 +36,40 @@ public class GameData : MonoBehaviour
     {
         get { return _offset; }
     }
+
+    public static int Health
+    {
+        get { return _health; }
+        set { _health = value; }
+    }
+
+
+    public static int Highscore1
+    {
+        get { return _hs1; }
+        set { _hs1 = value; }
+    }
+
+    public static int Highscore2
+    {
+        get { return _hs2; }
+        set { _hs3 = value; }
+    }
+
+    public static int Highscore3
+    {
+        get { return _hs3; }
+        set { _hs3 = value; }
+    }
+    public static int Highscore4
+    {
+        get { return _hs4; }
+        set { _hs4 = value; }
+    }
+    public static int Highscore5
+    {
+        get { return _hs5; }
+        set { _hs5 = value; }
+    }
+
 }

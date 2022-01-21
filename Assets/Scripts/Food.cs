@@ -7,6 +7,8 @@ public class Food : MonoBehaviour
 
     int points;
 
+    public bool isEaten = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +38,8 @@ public class Food : MonoBehaviour
 
             points = Random.Range(1, 5) * 5;
             GameData.Score += points;
+
+            isEaten = true;
         }
 
         print(GameData.Score);
