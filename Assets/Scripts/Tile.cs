@@ -7,6 +7,8 @@ public class Tile : MonoBehaviour
     private bool _isObstacle = false;
     private bool _isFood = false;
 
+    public bool isVisited = false;
+
     public bool isObstacle()
     {
         return _isObstacle;

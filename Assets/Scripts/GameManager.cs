@@ -40,9 +40,9 @@ public class GameManager : MonoBehaviour
 		//Creating a new grid
 		_gm = new GridManager(30	, 30, _tilePrefab);
 
-		_gm.CreateMaze();
+		CreateMaze();
 
-		/*
+		
 		for (int i = 0; i < 2; i++)
 		{
 			addSeeker();
@@ -53,23 +53,174 @@ public class GameManager : MonoBehaviour
 			addFood();
 		}
 
-		for (int i = 0; i < Random.Range(20, 80); i++)
-		{
-			addObstacle();
-		}
-
 		addPlayer();
 
 		startSeeking();
-		*/
+		
 	}
+
+
 
 	private void Update()
 	{
 		AstarPath.active.Scan();
 	}
 
-	
+	public void CreateMaze()
+	{
+		Vector2[,] Points = new Vector2[GameData.Width, GameData.Height];
+
+		for (int x = 0; x < GameData.Width; x++)
+		{
+			for (int y = 0; y < GameData.Width; y++)
+			{
+				Points[x, y] = new Vector3((1 * x), (1 * y));
+				//print(Points[x, y]);
+			}
+		}
+
+		for (int x = 0; x < GameData.Width; x++)
+		{
+			for (int y = 0; y < GameData.Width; y++)
+			{
+				GameObject delSquare;
+
+				if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
+				{
+					delSquare.GetComponent<Tile>().setObstacle(true);
+					print(delSquare);
+				}
+			}
+		}
+
+
+		for (int x = 0; x < GameData.Width; x++)
+		{
+			for (int y = 0; y < GameData.Width; y++)
+			{
+				if (x == 0 || y == 0 || x == GameData.Width - 1 || y == GameData.Height - 1)
+				{
+					GameObject delSquare;
+
+					if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
+					{
+						delSquare.GetComponent<Tile>().isVisited = true;
+						//print(delSquare);
+					}
+				}
+				else if (y == 1 || y == GameData.Height - 2)
+				{
+					GameObject delSquare;
+
+					if (_gm._tiles.TryGetValue(Points[x, y], out delSquare))
+					{
+						delSquare.GetComponent<Tile>().isVisited = true;
+						delSquare.GetComponent<Tile>().setObstacle(false);
+						print(delSquare.transform.position + " " + x + " " + y);
+					}
+				}
+
+			}
+		}
+
+		GameObject outSquare;
+
+		//GameData.Width / 2, GameData.Height / 2
+
+		if (_gm._tiles.TryGetValue(Points[GameData.Width / 2, GameData.Height / 2], out outSquare))
+		{
+			MazeAlgorithm(outSquare, Points);
+		}
+	}
+
+	private void MazeAlgorithm(GameObject tile, Vector2[,] points)
+	{
+
+		tile.GetComponent<Tile>().isVisited = true;
+
+		Vector3 pos = tile.transform.position;
+
+
+		GameObject[] tiles = new GameObject[4];
+
+
+		if (_gm._tiles.TryGetValue(points[(int)pos.x+1, (int)pos.y], out tiles[0]) &&
+			_gm._tiles.TryGetValue(points[(int)pos.x, (int)pos.y+1], out tiles[1]) &&
+			_gm._tiles.TryGetValue(points[(int)pos.x-1, (int)pos.y], out tiles[2]) &&
+			_gm._tiles.TryGetValue(points[(int)pos.x, (int)pos.y-1], out tiles[3]))
+		{
+			int ranNum = Random.Range(0, 4);
+
+			while (tiles[0].GetComponent<Tile>().isVisited == false ||
+				  tiles[1].GetComponent<Tile>().isVisited == false ||
+				  tiles[2].GetComponent<Tile>().isVisited == false ||
+				  tiles[3].GetComponent<Tile>().isVisited == false)
+			{
+
+				print(tiles[ranNum].transform.position + " " + points);
+
+				if (tiles[ranNum].GetComponent<Tile>().isVisited == false)
+				{
+					switch (ranNum)
+					{
+						case 0:
+							tiles[0].GetComponent<Tile>().isVisited = true;
+							tiles[1].GetComponent<Tile>().isVisited = true;
+							tiles[3].GetComponent<Tile>().isVisited = true;
+
+							tiles[ranNum].GetComponent<Tile>().setObstacle(false);
+
+							MazeAlgorithm(tiles[ranNum], points);
+							break;
+
+						case 1:
+							tiles[1].GetComponent<Tile>().isVisited = true;
+							tiles[0].GetComponent<Tile>().isVisited = true;
+							tiles[2].GetComponent<Tile>().isVisited = true;
+
+							tiles[ranNum].GetComponent<Tile>().setObstacle(false);
+
+							MazeAlgorithm(tiles[ranNum], points);
+							break;
+
+						case 2:
+							tiles[2].GetComponent<Tile>().isVisited = true;
+							tiles[1].GetComponent<Tile>().isVisited = true;
+							tiles[3].GetComponent<Tile>().isVisited = true;
+
+							tiles[ranNum].GetComponent<Tile>().setObstacle(false);
+
+							MazeAlgorithm(tiles[ranNum], points);
+							break;
+
+						case 3:
+							tiles[3].GetComponent<Tile>().isVisited = true;
+							tiles[0].GetComponent<Tile>().isVisited = true;
+							tiles[2].GetComponent<Tile>().isVisited = true;
+
+							tiles[ranNum].GetComponent<Tile>().setObstacle(false);
+
+							MazeAlgorithm(tiles[ranNum], points);
+							break;
+					}
+				}
+				else if (ranNum == 3)
+				{
+					ranNum = 0;
+				}
+				else
+				{
+					ranNum++;
+				}
+			}
+		}
+
+
+		return;
+
+
+
+	}
 
 	private void addSeeker()
 	{
@@ -84,21 +235,19 @@ public class GameManager : MonoBehaviour
 		GameObject seek = Instantiate(_playerPrefab, spawnLoc, Quaternion.identity);
 	}
 
-	public void addObstacle()
+	public void addObstacle(Vector2 spawnLoc)
     {
 		GameObject tile = _tilePrefab;
 
-		Vector3 spawnLoc = _gm.getSpawnLocation();
+        GameObject bl = Instantiate(tile, spawnLoc, Quaternion.identity);
 
+		print("gay");
 
-		if (_gm._tiles.ContainsKey(new Vector2Int((int)spawnLoc.x, (int)spawnLoc.y)))
-        {
-            GameObject bl = Instantiate(tile, spawnLoc, Quaternion.identity);
+        bl.GetComponent<Tile>().setObstacle(true);
 
-            bl.GetComponent<Tile>().setObstacle(true);
+		print("ass");
 
-			obst.Add(bl);	
-		}
+		obst.Add(bl);
 
     }
 
