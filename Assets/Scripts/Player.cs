@@ -60,6 +60,8 @@ public class Player : MonoBehaviour
 
             if (GameData.Health <= 0)
             {
+                GameData gd = new GameData();
+                SaveSystem.SaveScore(gd);
                 SceneManager.LoadScene("Highscores");
             }
         }

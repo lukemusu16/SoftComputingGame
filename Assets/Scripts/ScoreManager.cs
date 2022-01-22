@@ -15,56 +15,24 @@ public class ScoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SaveHighscores data = SaveSystem.LoadData();
+
         hs1 = GameObject.Find("Canvas").transform.GetChild(5).GetComponent<Text>();
         hs2 = GameObject.Find("Canvas").transform.GetChild(6).GetComponent<Text>();
         hs3 = GameObject.Find("Canvas").transform.GetChild(7).GetComponent<Text>();
         hs4 = GameObject.Find("Canvas").transform.GetChild(8).GetComponent<Text>();
         hs5 = GameObject.Find("Canvas").transform.GetChild(9).GetComponent<Text>();
 
-        if (GameData.Score > GameData.Highscore1)
-        {
-            GameData.Highscore2 = GameData.Highscore1;
-            GameData.Highscore3 = GameData.Highscore2;
-            GameData.Highscore4 = GameData.Highscore3;
-            GameData.Highscore5 = GameData.Highscore4;
+        hs1.text = data.hs1.ToString();
+        hs2.text = data.hs2.ToString();
+        hs3.text = data.hs3.ToString();
+        hs4.text = data.hs4.ToString();
+        hs5.text = data.hs5.ToString();
 
-            GameData.Highscore1 = GameData.Score;
-        }
-        else if (GameData.Highscore1 > GameData.Score && GameData.Score > GameData.Highscore2)
-        {
-            GameData.Highscore3 = GameData.Highscore2;
-            GameData.Highscore4 = GameData.Highscore3;
-            GameData.Highscore5 = GameData.Highscore4;
-
-            GameData.Highscore2 = GameData.Score;
-
-        }
-        else if (GameData.Highscore2 > GameData.Score && GameData.Score > GameData.Highscore3)
-        {
-            GameData.Highscore4 = GameData.Highscore3;
-            GameData.Highscore5 = GameData.Highscore4;
-
-            GameData.Highscore3 = GameData.Score;
-
-        }
-        else if (GameData.Highscore3 > GameData.Score && GameData.Score > GameData.Highscore4)
-        {
-            GameData.Highscore5 = GameData.Highscore4;
-
-            GameData.Highscore4 = GameData.Score;
-
-        }
-        else if (GameData.Highscore4 > GameData.Score && GameData.Score > GameData.Highscore5)
-        {
-            GameData.Highscore5 = GameData.Score;
-        }
-
-        GameData.Score = 0;
-
-        hs1.text = GameData.Highscore1.ToString();
-        hs2.text = GameData.Highscore2.ToString();
-        hs3.text = GameData.Highscore3.ToString();
-        hs4.text = GameData.Highscore4.ToString();
-        hs5.text = GameData.Highscore5.ToString();
+        Debug.Log(data.hs1);
+        Debug.Log(data.hs2);
+        Debug.Log(data.hs3);
+        Debug.Log(data.hs4);
+        Debug.Log(data.hs5);
     }
 }

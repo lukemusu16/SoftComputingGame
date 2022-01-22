@@ -33,8 +33,25 @@ public class GameManager : MonoBehaviour
 
 	public void Start()
 	{
+		SaveHighscores data = SaveSystem.LoadData();
+
+		Debug.Log(data.hs1);
+		Debug.Log(data.hs2);
+		Debug.Log(data.hs3);
+		Debug.Log(data.hs4);
+		Debug.Log(data.hs5);
+
+		GameData.HS1 = data.hs1;
+		GameData.HS2 = data.hs2;
+		GameData.HS3 = data.hs3;
+		GameData.HS4 = data.hs4;
+		GameData.HS5 = data.hs5;
+
+		print(GameData.HS1);
+
 
 		GameData.Health = 100;
+		GameData.Score = 0;
 
 		//Setting the _cam to main camera
 		_cam = Camera.main;
