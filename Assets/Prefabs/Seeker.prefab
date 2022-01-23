@@ -197,4 +197,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _waypoint: {fileID: 3849887506392510184, guid: 7e8095bd1aaf0b24791ef4fc534642ec, type: 3}
-  hasStarted: 0
+  hasStarted: 1

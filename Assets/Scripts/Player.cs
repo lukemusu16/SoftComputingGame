@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    private float playerSpeed = 5f;
+    private float playerSpeed = 7.5f;
 
     private bool isLockHorizontal;
     private bool isLockVertical;
@@ -14,9 +15,15 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     Vector2 movement;
 
+    GameManager manager;
+
+    
+
     // Start is called before the first frame update
     void Start()
     {
+        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
         
     }
 
@@ -50,20 +57,31 @@ public class Player : MonoBehaviour
     private void ReduceHealth(int value)
     {
         GameData.Health -= value;
+        Text health = GameObject.Find("Canvas").transform.GetChild(1).GetComponentInChildren<Text>();
+
+        health.text = GameData.Health.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Enemy"))
         {
-            ReduceHealth(25);
-
+            ReduceHealth(1);
+            
             if (GameData.Health <= 0)
             {
                 GameData gd = new GameData();
                 SaveSystem.SaveScore(gd);
                 SceneManager.LoadScene("Highscores");
             }
+
+            Destroy(col.gameObject);
+
+            Vector3 newPos = manager._gm.getSpawnLocation(gameObject);
+
+            print(newPos);
+
+            Instantiate(manager._seekerPrefab, newPos, Quaternion.identity);
         }
     }
 }

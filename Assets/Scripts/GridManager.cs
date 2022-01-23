@@ -35,7 +35,7 @@ public class GridManager : MonoBehaviour
         if (_tiles.ContainsKey(tilePos))
         {
             //If it exists, we check if it is an obstacle
-            if (_tiles[tilePos].GetComponent<Tile>().isObstacle() || _tiles[tilePos].GetComponent<Tile>().isFood())
+            if (_tiles[tilePos].GetComponent<Tile>().isObstacle())
             {
                 //If it is an obstacle, we return false
                 return false;
@@ -60,6 +60,18 @@ public class GridManager : MonoBehaviour
         {
             Vector3 randomPos = new Vector3(Random.Range(0, GameData.Width-2), Random.Range(0, GameData.Height-2));
             if (isTileAvailable(randomPos))
+            {
+                return randomPos;
+            }
+        }
+    }
+
+    public Vector3 getSpawnLocation(GameObject player)
+    {
+        while (true)
+        {
+            Vector3 randomPos = new Vector3(Random.Range(0, GameData.Width - 2), Random.Range(0, GameData.Height - 2));
+            if (isTileAvailable(randomPos) && Vector3.Distance(randomPos, player.transform.position) > 10)
             {
                 return randomPos;
             }

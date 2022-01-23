@@ -5,7 +5,7 @@ public class GameData
     private static int _height = 30;
     private static int _width = 30;
     private static float _offset = 15f;
-    private static int _health = 100;
+    private static int _health = 3;
 
     private static int hs1;
     private static int hs2;
@@ -19,6 +19,8 @@ public class GameData
     public int Highscore3;
     public int Highscore4;
     public int Highscore5;
+
+    private static GameDiff _currentDiff;
 
     public static int Score
     {
@@ -47,7 +49,7 @@ public class GameData
         set { _health = value; }
     }
 
-    
+
     public static int HS1
     {
         get { return hs1; }
@@ -74,6 +76,12 @@ public class GameData
     {
         get { return hs5; }
         set { hs5 = value; }
+    }
+
+    public static GameDiff CurrentDiff
+    {
+        get { return _currentDiff; }
+        set { _currentDiff = value; }
     }
     
     public GameData()

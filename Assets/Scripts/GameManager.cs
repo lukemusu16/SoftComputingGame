@@ -6,6 +6,15 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
+public enum GameDiff
+{ 
+	Easy,
+	Medium,
+	Hard,
+}
+
+
 public class GameManager : MonoBehaviour
 {
     private Camera _cam;
@@ -14,12 +23,15 @@ public class GameManager : MonoBehaviour
 	private GameObject _tilePrefab;
 
 	[SerializeField]
-	private GameObject _seekerPrefab;
+	public GameObject _seekerPrefab;
 
 	[SerializeField]
 	private GameObject _playerPrefab;
 
-	private GridManager _gm;
+	[SerializeField]
+	private GameObject _foodPrefab;
+
+	public GridManager _gm;
 
 	List<GameObject> skrs = new List<GameObject>();
 
@@ -49,16 +61,19 @@ public class GameManager : MonoBehaviour
 
 		print(GameData.HS1);
 
-
-		GameData.Health = 100;
-		GameData.Score = 0;
-
 		//Setting the _cam to main camera
 		_cam = Camera.main;
 		//Loading the path finding
 		
 		//Creating a new grid
 		_gm = new GridManager(30	, 30, _tilePrefab);
+
+
+		Text health = GameObject.Find("Canvas").transform.GetChild(1).GetComponentInChildren<Text>();
+		Text score = GameObject.Find("Canvas").transform.GetChild(2).GetComponentInChildren<Text>();
+
+		health.text = GameData.Health.ToString();
+		score.text = GameData.Score.ToString();
 
 		CreateMaze();
 
@@ -87,11 +102,6 @@ public class GameManager : MonoBehaviour
 
 		foreach (GameObject food in foods)
 		{
-			if (food.GetComponentInChildren<Food>().GetIsEaten())
-			{
-				food.GetComponentInChildren<Food>().enabled = false;
-			}
-
 			if (checkEaten == foods.Count)
 			{
 				SceneManager.LoadScene("Main");
@@ -251,14 +261,9 @@ public class GameManager : MonoBehaviour
 	private void addPlayer()
 	{
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-		Vector3 spawnLoc = _gm.getSpawnLocation();
-		
+		Vector3 spawnLoc = (_gm.getSpawnLocation(enemies[0]) + _gm.getSpawnLocation(enemies[1]))/2;
 
-		if (Vector3.Distance(spawnLoc, enemies[0].transform.position) > 10 ||
-			Vector3.Distance(spawnLoc, enemies[1].transform.position) > 10)
-		{
-			GameObject seek = Instantiate(_playerPrefab, spawnLoc, Quaternion.identity);
-		}
+		GameObject seek = Instantiate(_playerPrefab, spawnLoc, Quaternion.identity);
 	}
 
 	public void addObstacle(Vector2 spawnLoc)
@@ -275,18 +280,14 @@ public class GameManager : MonoBehaviour
 
 	private void addFood()
 	{
-		GameObject tile = _tilePrefab;
+		GameObject food = _foodPrefab;
 
 		Vector3 spawnLoc = _gm.getSpawnLocation();
 
 
 		if (_gm._tiles.ContainsKey(new Vector2Int((int)spawnLoc.x, (int)spawnLoc.y)))
 		{
-			GameObject bl = Instantiate(tile, spawnLoc, Quaternion.identity);
-
-			bl.GetComponent<Tile>().setFood(true);
-
-			bl.GetComponentInChildren<Food>().enabled = true;
+			GameObject bl = Instantiate(food, spawnLoc, Quaternion.identity);
 
 			foods.Add(bl);
 
@@ -319,5 +320,6 @@ public class GameManager : MonoBehaviour
 		obst.RemoveRange(0, obst.Count);
 
 	}
+
 
 }

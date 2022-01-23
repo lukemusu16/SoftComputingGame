@@ -14,13 +14,7 @@ public class mySeeker : MonoBehaviour
 
     private List<GameObject> wps = new List<GameObject>(10);
 
-    
-
-    int currPos = 0;
-
     public bool hasStarted = false;
-
-    int layermask = 8;
 
     private bool isFleeing = false;
 
@@ -29,6 +23,11 @@ public class mySeeker : MonoBehaviour
 
     GameObject player;
 
+    float currentSpeed;
+
+
+    private GameDiff currentDiff;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,7 +35,26 @@ public class mySeeker : MonoBehaviour
         _ais = FindObjectsOfType<MonoBehaviour>().OfType<IAstarAI>().ToArray();
 
         player = GameObject.FindGameObjectWithTag("Player");
-        
+
+        currentDiff = GameData.CurrentDiff;
+
+        switch (currentDiff)
+        {
+            case (GameDiff.Easy):
+                GetComponent<AILerp>().speed = 2;
+                break;
+
+            case (GameDiff.Medium):
+                GetComponent<AILerp>().speed = 3;
+                break;
+
+            case (GameDiff.Hard):
+                GetComponent<AILerp>().speed = 4;
+                break;
+        }
+
+        currentSpeed = GetComponent<AILerp>().speed;
+
     }
 
     void Update()
@@ -77,10 +95,12 @@ public class mySeeker : MonoBehaviour
     {
         Color currentColor = new Color(225,0,228);
         this.gameObject.GetComponent<AIDestinationSetter>().target = fwp;
+        this.gameObject.GetComponent<AILerp>().speed = 2;
         print("fleeing");
         yield return new WaitForSeconds(5f);
         print("not fleeing");
         gameObject.GetComponent<SpriteRenderer>().color = currentColor;
+        this.gameObject.GetComponent<AILerp>().speed = currentSpeed;
         isFleeing = false;
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Food : MonoBehaviour
 {
@@ -33,9 +34,6 @@ public class Food : MonoBehaviour
     {
         if (col.CompareTag("Player"))
         {
-            GetComponent<BoxCollider2D>().enabled = false;
-            GetComponent<SpriteRenderer>().enabled = false;
-
             GameObject[] skrs = GameObject.FindGameObjectsWithTag("Enemy");
             print(skrs.Length);
             foreach (GameObject seeker in skrs)
@@ -46,8 +44,13 @@ public class Food : MonoBehaviour
             points = Random.Range(1, 5) * 5;
             GameData.Score += points;
 
+            Text score = GameObject.Find("Canvas").transform.GetChild(2).GetComponentInChildren<Text>();
+
+            score.text = GameData.Score.ToString();
+
             isEaten = true;
             gm.checkEaten++;
+            Destroy(gameObject);
         }
 
         print(GameData.Score);
